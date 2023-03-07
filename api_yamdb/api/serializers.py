@@ -113,8 +113,7 @@ class CreateTitleSerializer(ModelSerializer):
 
     def create(self, validated_data):
         if 'genre' not in self.initial_data:
-            title = Title.objects.create(**validated_data)
-            return title
+            return Title.objects.create(**validated_data)
         genres = validated_data.pop('genre')
         title = Title.objects.create(**validated_data)
         for genre in genres:

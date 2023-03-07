@@ -1,10 +1,9 @@
 from rest_framework.serializers import (CharField, CurrentUserDefault,
                                         EmailField, IntegerField,
                                         ModelSerializer, RegexField,
-                                        SlugRelatedField, Serializer,
+                                        Serializer, SlugRelatedField,
                                         ValidationError)
 from rest_framework.validators import UniqueTogetherValidator
-
 from reviews.models import Category, Comment, Genre, GenreTitle, Review, Title
 from users.models import User
 
@@ -116,17 +115,16 @@ class CreateTitleSerializer(ModelSerializer):
         if 'genre' not in self.initial_data:
             title = Title.objects.create(**validated_data)
             return title
-        else:
-            genres = validated_data.pop('genre')
-            title = Title.objects.create(**validated_data)
-            for genre in genres:
-                current_genre = Genre.objects.get(
-                    slug=genre.slug
-                )
-                GenreTitle.objects.create(
-                    genre=current_genre, title=title
-                )
-            return title
+        genres = validated_data.pop('genre')
+        title = Title.objects.create(**validated_data)
+        for genre in genres:
+            current_genre = Genre.objects.get(
+                slug=genre.slug
+            )
+            GenreTitle.objects.create(
+                genre=current_genre, title=title
+            )
+        return title
 
 
 class ReviewSerializer(ModelSerializer):

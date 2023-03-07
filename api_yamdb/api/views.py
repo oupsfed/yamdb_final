@@ -1,5 +1,5 @@
-from django.db.models import Avg
 from django.contrib.auth.tokens import default_token_generator
+from django.db.models import Avg
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, mixins, status, viewsets
@@ -9,9 +9,9 @@ from rest_framework.permissions import (AllowAny, IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import AccessToken
-
 from reviews.models import Category, Genre, Review, Title
 from users.models import User
+
 from .filters import TitleFilter
 from .permissions import (IsAdmin, IsAdminAuthorOrReadOnly, IsAdminOrReadOnly,
                           IsAdminOrReadOnlyTitle)
@@ -176,11 +176,10 @@ class ReviewViewSet(viewsets.ModelViewSet):
     pagination_class = PageNumberPagination
 
     def title_for_review(self):
-        title = get_object_or_404(
+        return get_object_or_404(
             Title,
             id=self.kwargs.get('title_id')
         )
-        return title
 
     def get_queryset(self):
         return self.title_for_review().reviews.all()
@@ -197,11 +196,10 @@ class CommentViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticatedOrReadOnly, IsAdminAuthorOrReadOnly)
 
     def review_for_comment(self):
-        review = get_object_or_404(
+        return get_object_or_404(
             Review,
             id=self.kwargs.get('review_id')
         )
-        return review
 
     def get_queryset(self):
         return self.review_for_comment().comments.all()

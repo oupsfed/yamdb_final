@@ -21,15 +21,13 @@ class UserPermission(BasePermission):
     def has_permission(self, request, view):
         if view.action in ['list', 'retrieve']:
             return True
-        elif view.action in ['create', 'update', 'partial_update', 'destroy']:
+        if view.action in ['create', 'update', 'partial_update', 'destroy']:
             if not request.user.is_authenticated():
                 raise GenericAPIException(detail="no auth", status_code=401)
             if not request.user.is_admin():
                 raise GenericAPIException(detail="not admin", status_code=403)
             return True
-
-        else:
-            return False
+        return False
 
 
 class IsAdmin(BasePermission):
